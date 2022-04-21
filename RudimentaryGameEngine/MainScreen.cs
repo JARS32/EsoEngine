@@ -18,8 +18,6 @@ namespace RudimentaryGameEngine
 	{
 		public World world = new World();
 		public Primitives primitives = new Primitives();
-		public OBJSerialiser serialiser = new OBJSerialiser();
-		public Utilities utils = new Utilities();
 		public Dictionary<string, SceneObject> objectTypes = new Dictionary<string, SceneObject>();
 		public Bitmap brushPreviewBM = new Bitmap(72, 27);
 		public Bitmap colourPreviewBM = new Bitmap(150, 22);
@@ -60,13 +58,13 @@ namespace RudimentaryGameEngine
 		{
 			//if ()
 			//MessageBox.Show($"Form.KeyPress: '{e.KeyCode}' pressed.");
-			world.enableKey(e.KeyCode.ToString());
+			world.getController().enableKey(e.KeyCode.ToString());
 		}
 
 		private void Form1_KeyUp(object sender, KeyEventArgs e)
 		{
 			//MessageBox.Show($"Form.KeyPress: '{e.KeyCode}' pressed.");
-			world.disableKey(e.KeyCode.ToString());
+			world.getController().disableKey(e.KeyCode.ToString());
 		}
 
 		private void cmbBoxSceneObjects_SelectedIndexChanged(object sender, EventArgs e)
@@ -373,7 +371,7 @@ namespace RudimentaryGameEngine
 
 		private void loadObjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SceneObject SO = serialiser.loadObject(world);
+			SceneObject SO = OBJSerialiser.loadObject(world);
 
 			if (SO == null)
 				return;
@@ -440,15 +438,15 @@ namespace RudimentaryGameEngine
 
 		private void loadColourPreview(bool resetValues = true)
 		{
-			NUPBrush.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
+			NUPBrush.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
 			if (resetValues)
 				NUPBrush.Value = 1;
 
-			NUPFaceBrush.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
+			NUPFaceBrush.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
 			if (resetValues)
 				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(0).brushIndice + 1;
 
-			NUPFace.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceCount(), 1, 9999999);
+			NUPFace.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceCount(), 1, 9999999);
 
 			updateColourPreview();
 			updateBrushPreview();

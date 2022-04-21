@@ -15,10 +15,10 @@ namespace RudimentaryGameEngine
 		private Graphics screenPanel;
 		private PictureBox pcBoxScreen;
 		private SolidBrush clearBrush = new SolidBrush(Color.White);
-		private Dictionary<string, bool> controls = new Dictionary<string, bool>();
+		
 		private Point3F worldRotation = new Point3F(0, 0, 0);
 		private Random random = new Random();
-		private Utilities utils = new Utilities();
+		private Controller controller;
 
 		public bool orthographic = false;
 		public RenderType renderType = RenderType.Regular;
@@ -27,38 +27,26 @@ namespace RudimentaryGameEngine
 
 		public List<SceneObject> sceneObjects = new List<SceneObject>();
 		public List<SceneObject> sceneObjectMap = new List<SceneObject>();
-		public Point3F upcomingCameraTranslation = new Point3F(0, 0, 0);
 
 		public World()
 		{
 			newScreenSize(new PointF(640, 480));
 			screenPanel = Graphics.FromImage(screen);
-			controls.Add("W", false);
-			controls.Add("A", false);
-			controls.Add("S", false);
-			controls.Add("D", false);
-			controls.Add("E", false);
-			controls.Add("Q", false);
-			controls.Add("ShiftKey", false);
-			controls.Add("ControlKey", false);
-			controls.Add("Space", false);
+			controller = new Controller(this);
+		}
+
+		public void Update()
+		{
+			controller.update();
+			camera.translate(controller.getCameraMove());
+			render(orthographic);
+			pcBoxScreen.Image = screen;
 		}
 
 		public void newScreenSize(PointF resolution)
 		{
 			screen = new Bitmap((int)resolution.X, (int)resolution.Y);
 			screenPanel = Graphics.FromImage(screen);
-		}
-
-		private void motor()
-		{
-			upcomingCameraTranslation.X = Convert.ToByte(controls["D"]) - Convert.ToByte(controls["A"]);
-			upcomingCameraTranslation.Y = Convert.ToByte(controls["ShiftKey"]) - Convert.ToByte(controls["Space"]);
-			upcomingCameraTranslation.Z = Convert.ToByte(controls["W"]) - Convert.ToByte(controls["S"]);
-			upcomingCameraTranslation = upcomingCameraTranslation.normalise();
-			upcomingCameraTranslation *= Convert.ToByte(controls["ControlKey"]) + 1;
-			upcomingCameraTranslation *= 2 * camera.getSpeed() / 100;
-			camera.translate(upcomingCameraTranslation);
 		}
 
 		private void render(bool Ortho = false)
@@ -120,9 +108,9 @@ namespace RudimentaryGameEngine
 									if (SO.getNoise())
 									{
 										Color regOldColor = SO.getBrushes()[SO.getFace(i / 3).brushIndice].Color;
-										int regNewRed = utils.Clamp(regOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-										int regNewGreen = utils.Clamp(regOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-										int regNewBlue = utils.Clamp(regOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewRed = Utilities.Clamp(regOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewGreen = Utilities.Clamp(regOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewBlue = Utilities.Clamp(regOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 										Color regNewColor = Color.FromArgb(regOldColor.A, regNewRed, regNewGreen, regNewBlue);
 										SolidBrush regBrush = new SolidBrush(regNewColor);
 										screenPanel.FillPolygon(regBrush, face);
@@ -135,9 +123,9 @@ namespace RudimentaryGameEngine
 									if (SO.getNoise())
 									{
 										Color regOldColor = SO.getBrush().Color;
-										int regNewRed = utils.Clamp(regOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-										int regNewGreen = utils.Clamp(regOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-										int regNewBlue = utils.Clamp(regOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewRed = Utilities.Clamp(regOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewGreen = Utilities.Clamp(regOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+										int regNewBlue = Utilities.Clamp(regOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 										Color regNewColor = Color.FromArgb(regOldColor.A, regNewRed, regNewGreen, regNewBlue);
 										SolidBrush regBrush = new SolidBrush(regNewColor);
 										screenPanel.FillPolygon(regBrush, face);
@@ -151,9 +139,9 @@ namespace RudimentaryGameEngine
 								if (SO.getBrushes().Length > 1)
 								{
 									Color noiseOldColor = SO.getBrushes()[SO.getFace(i / 3).brushIndice].Color;
-									int noiseNewRed = utils.Clamp(noiseOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-									int noiseNewGreen = utils.Clamp(noiseOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-									int noiseNewBlue = utils.Clamp(noiseOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewRed = Utilities.Clamp(noiseOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewGreen = Utilities.Clamp(noiseOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewBlue = Utilities.Clamp(noiseOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 									Color noiseNewColor = Color.FromArgb(noiseOldColor.A, noiseNewRed, noiseNewGreen, noiseNewBlue);
 									SolidBrush noiseBrush = new SolidBrush(noiseNewColor);
 									screenPanel.FillPolygon(noiseBrush, face);
@@ -161,9 +149,9 @@ namespace RudimentaryGameEngine
 								else
 								{
 									Color noiseOldColor = SO.getBrush().Color;
-									int noiseNewRed = utils.Clamp(noiseOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-									int noiseNewGreen = utils.Clamp(noiseOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
-									int noiseNewBlue = utils.Clamp(noiseOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewRed = Utilities.Clamp(noiseOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewGreen = Utilities.Clamp(noiseOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
+									int noiseNewBlue = Utilities.Clamp(noiseOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 									Color noiseNewColor = Color.FromArgb(noiseOldColor.A, noiseNewRed, noiseNewGreen, noiseNewBlue);
 									SolidBrush noiseBrush = new SolidBrush(noiseNewColor);
 									screenPanel.FillPolygon(noiseBrush, face);
@@ -172,7 +160,7 @@ namespace RudimentaryGameEngine
 
 							case RenderType.Trick:
 								Color sizedOldColor = SO.getBrush().Color;
-								int newSaturation = utils.Clamp((Math.Abs(face[0].X - face[1].X) * Math.Abs(face[1].Y - face[2].Y)) / 2, 100, 200);
+								int newSaturation = Utilities.Clamp((Math.Abs(face[0].X - face[1].X) * Math.Abs(face[1].Y - face[2].Y)) / 2, 100, 200);
 								Color sizedNewColor = Color.FromArgb(sizedOldColor.A, newSaturation, newSaturation, newSaturation);
 								SolidBrush sizedBrush = new SolidBrush(sizedNewColor);
 								screenPanel.FillPolygon(sizedBrush, face);
@@ -230,13 +218,6 @@ namespace RudimentaryGameEngine
 			}
 		}
 
-		public void Update()
-		{
-			motor();
-			render(orthographic);
-			pcBoxScreen.Image = screen;
-		}
-
 		public void addObject(SceneObject sceneObject) 
 		{
 			sceneObject.setParent(this);
@@ -254,16 +235,6 @@ namespace RudimentaryGameEngine
 			waitingObject = null;
 		}
 
-		public void enableKey(string key)
-		{
-			controls[key] = true;
-		}
-
-		public void disableKey(string key)
-		{
-			controls[key] = false;
-		}
-
 		public void setPcBox(PictureBox pictureBox)
 		{
 			pcBoxScreen = pictureBox;
@@ -277,6 +248,11 @@ namespace RudimentaryGameEngine
 		public Camera getCamera()
 		{
 			return camera;
+		}
+
+		public Controller getController()
+		{
+			return controller;
 		}
 	}
 }
