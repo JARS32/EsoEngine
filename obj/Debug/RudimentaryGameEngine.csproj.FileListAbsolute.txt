@@ -1,0 +1,11 @@
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\bin\Debug\RudimentaryGameEngine.exe.config
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\bin\Debug\RudimentaryGameEngine.exe
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\bin\Debug\RudimentaryGameEngine.pdb
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.csprojAssemblyReference.cache
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.Properties.Resources.resources
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.csproj.GenerateResource.cache
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.csproj.CoreCompileInputs.cache
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.exe
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.pdb
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.MainScreen.resources
+C:\Users\jars7\Source\Repos\RudimentaryGameEngine\RudimentaryGameEngine\obj\Debug\RudimentaryGameEngine.WidthDialog.resources
