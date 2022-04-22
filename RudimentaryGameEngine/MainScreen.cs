@@ -71,6 +71,8 @@ namespace RudimentaryGameEngine
 		{
 			if (cmbBoxSceneObjects.Items[cmbBoxSceneObjects.SelectedIndex] != null)
 			{
+				world.selectedObjectIndex = cmbBoxSceneObjects.SelectedIndex;
+
 				SceneObjectGPBox.Enabled = true;
 
 				inputLock = true;
@@ -504,6 +506,7 @@ namespace RudimentaryGameEngine
 			if (!inputLock)
 			{
 				inputLock = true;
+				world.selectedFaceIndex = Convert.ToInt32(NUPFace.Value - 1);
 				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceFromMap(Convert.ToInt32(NUPFace.Value) - 1).brushIndice + 1;
 				inputLock = false;
 			}

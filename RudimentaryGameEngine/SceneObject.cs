@@ -483,6 +483,10 @@ namespace RudimentaryGameEngine
 			}
 		}
 
+		/// <summary>
+		/// Calculates the screen points of all points in the object
+		/// </summary>
+		/// <returns>Array of all faces of the object ordered by depth</returns>
 		public face[] rasteriseObject()
 		{
 			Point3F cameraPoint = new Point3F(parent.getCamera().location.X, parent.getCamera().location.Y, parent.getCamera().location.Z);
@@ -490,7 +494,7 @@ namespace RudimentaryGameEngine
 
 			for (int i = 0; i < initialPointOffsets.Length; i++)
 			{
-				Point3F difference = transformedPointOffsets[i].deepCopy() - cameraPoint;
+				Point3F difference = transformedPointOffsets[i].deepCopy() + location - cameraPoint;
 				Point3F screenPos = new Point3F((difference.X / difference.Z) * XRatio, (difference.Y / difference.Z) * parent.getCamera().getResolution().Y);
 				screenPoints[i] = (screenPos + new Point3F((int)parent.getCamera().getResolution().X / 2, (int)parent.getCamera().getResolution().Y / 2)).toPoint();
 			}
@@ -672,12 +676,19 @@ namespace RudimentaryGameEngine
 		public void calculateDepth()
 		{
 			//average point depth
-			float sum = 0;
+			/*float sum = 0;
 			foreach (int i in pointIndices)
 			{
 				sum += parent.getPointOffsets()[i].calculateDepth(parent.getParent().getCamera().location);
 			}
-			depth = (sum / pointIndices.Length);
+			depth = (sum / pointIndices.Length);*/
+
+			//average of 2 point depth
+			float sum = 0;
+			sum += parent.getPointOffsets()[pointIndices[0]].calculateDepth(parent.getParent().getCamera().location);
+			sum += parent.getPointOffsets()[pointIndices[1]].calculateDepth(parent.getParent().getCamera().location);
+			sum += parent.getPointOffsets()[pointIndices[2]].calculateDepth(parent.getParent().getCamera().location);
+			depth = sum / 3;
 
 			//minimum point depth
 			/*float minDepth = parent.getPointOffsets()[pointIndices[0]].calculateDepth(parent.getParent().getCamera().location);

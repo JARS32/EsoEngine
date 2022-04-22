@@ -27,6 +27,8 @@ namespace RudimentaryGameEngine
 
 		public List<SceneObject> sceneObjects = new List<SceneObject>();
 		public List<SceneObject> sceneObjectMap = new List<SceneObject>();
+		public int selectedObjectIndex = -1;
+		public int selectedFaceIndex = -1;
 
 		public World()
 		{
@@ -97,10 +99,13 @@ namespace RudimentaryGameEngine
 				face[] faces;
 				if (Ortho)
 					faces = SO.rasteriseObject();
-				else
+				else {
+					if (SO.getLocation().Z - camera.getLocation().Z < 0)
+						continue;
 					faces = SO.rasteriseObject();
+				}
 				for (int i = 0; i < faces.Length; i++)
-				{
+				{ 
 					Point[] face = new Point[3] { SO.getScreenPoints()[faces[i].pointIndices[0]], SO.getScreenPoints()[faces[i].pointIndices[1]] , SO.getScreenPoints()[faces[i].pointIndices[2]] };
 					if (SO.getBrushes().Length > 0)
 					{
@@ -214,6 +219,12 @@ namespace RudimentaryGameEngine
 									screenPanel.DrawPolygon(new Pen(Color.Black, 1), face);
 								}
 								break;
+						}
+						if (selectedObjectIndex + selectedFaceIndex >= 0)
+						{
+							
+							face = new Point[3] { sceneObjectMap[selectedObjectIndex].getScreenPoints()[sceneObjectMap[selectedObjectIndex].getFaceFromMap(selectedFaceIndex).pointIndices[0]], sceneObjectMap[selectedObjectIndex].getScreenPoints()[sceneObjectMap[selectedObjectIndex].getFaceFromMap(selectedFaceIndex).pointIndices[1]], sceneObjectMap[selectedObjectIndex].getScreenPoints()[sceneObjectMap[selectedObjectIndex].getFaceFromMap(selectedFaceIndex).pointIndices[2]] };
+							screenPanel.DrawPolygon(new Pen(Color.Black, 1), face);
 						}
 					}
 					else

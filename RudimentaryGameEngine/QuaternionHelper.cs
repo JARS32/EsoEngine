@@ -8,7 +8,12 @@ namespace RudimentaryGameEngine
 {
 	class QuaternionHelper
 	{
-		//calculates the quaternion used to rotate a point around the 'Axis' by 'Angle'
+		/// <summary>
+		/// calculates the quaternion used to rotate a point around the 'Axis' by 'Angle'
+		/// </summary>
+		/// <param name="Axis">the Axis for which the rotation is to be acted around</param>
+		/// <param name="Angle">how far the rotation is to be around the axis in degrees</param>
+		/// <returns>the normalised version of the rotation quaternion</returns>
 		public static Quaternion fromAxisAngle(Point3F Axis, float Angle)
 		{
 			float factor = Convert.ToSingle(Math.Sin(Angle / 2));
