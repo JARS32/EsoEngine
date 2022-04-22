@@ -51,14 +51,18 @@ namespace RudimentaryGameEngine
 
 		private void render(bool Ortho = false)
 		{
+			//fills screen with flat colour to remove old frame
 			screenPanel.FillRectangle(clearBrush, 0, 0, camera.getResolution().X, camera.getResolution().Y);
+
+			//get every object to calculate the magnitude of the vector from camera location to it's location ie depth
 			foreach (SceneObject SO in sceneObjects)
 			{
-				Point3F diff = SO.getLocation().deepCopy() - camera.getLocation().deepCopy();
-				float mag = diff.magnitude();
-				SO.setDepth(mag);
+				SO.calculateDepth(camera.getLocation());
 			}
 
+			//NEED TO UPDATE
+			//REMOVE BUBBLE SORT FOR REAL ALGORITHM
+			//bubble sort to organise the sceneobjects in order of depth
 			bool changed = true;
 			while (changed)
 			{
@@ -90,14 +94,14 @@ namespace RudimentaryGameEngine
 
 			foreach (SceneObject SO in sceneObjects)
 			{
-				Point[] faces;
+				face[] faces;
 				if (Ortho)
-					faces = SO.getScreenTransformOrtho();
+					faces = SO.rasteriseObject();
 				else
-					faces = SO.getScreenTransform();
-				for (int i = 0; i < faces.Length; i += 3)
+					faces = SO.rasteriseObject();
+				for (int i = 0; i < faces.Length; i++)
 				{
-					Point[] face = new Point[3] { faces[i], faces[i + 1], faces[i + 2] };
+					Point[] face = new Point[3] { SO.getScreenPoints()[faces[i].pointIndices[0]], SO.getScreenPoints()[faces[i].pointIndices[1]] , SO.getScreenPoints()[faces[i].pointIndices[2]] };
 					if (SO.getBrushes().Length > 0)
 					{
 						switch (renderType)
@@ -107,7 +111,7 @@ namespace RudimentaryGameEngine
 								{
 									if (SO.getNoise())
 									{
-										Color regOldColor = SO.getBrushes()[SO.getFace(i / 3).brushIndice].Color;
+										Color regOldColor = SO.getBrushes()[SO.getFace(i).brushIndice].Color;
 										int regNewRed = Utilities.Clamp(regOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 										int regNewGreen = Utilities.Clamp(regOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 										int regNewBlue = Utilities.Clamp(regOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
@@ -116,7 +120,7 @@ namespace RudimentaryGameEngine
 										screenPanel.FillPolygon(regBrush, face);
 									}
 									else
-										screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i / 3).brushIndice], face);
+										screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i).brushIndice], face);
 								}
 								else
 								{
@@ -138,7 +142,7 @@ namespace RudimentaryGameEngine
 							case RenderType.ForcedNoisy:
 								if (SO.getBrushes().Length > 1)
 								{
-									Color noiseOldColor = SO.getBrushes()[SO.getFace(i / 3).brushIndice].Color;
+									Color noiseOldColor = SO.getBrushes()[SO.getFace(i).brushIndice].Color;
 									int noiseNewRed = Utilities.Clamp(noiseOldColor.R + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 									int noiseNewGreen = Utilities.Clamp(noiseOldColor.G + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
 									int noiseNewBlue = Utilities.Clamp(noiseOldColor.B + (Convert.ToInt32(SO.getNoiseValue() * ((random.NextDouble() * 2) - 1))), 0, 255);
@@ -171,7 +175,7 @@ namespace RudimentaryGameEngine
 								{
 									if ((i / 3) % 2 == 0)
 									{
-										screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i / 3).brushIndice], face);
+										screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i).brushIndice], face);
 									}
 									else
 									{
@@ -193,7 +197,7 @@ namespace RudimentaryGameEngine
 
 							case RenderType.ForcedWireFrame:
 								if (SO.getBrushes().Length > 1)
-									screenPanel.DrawPolygon(new Pen(SO.getBrushes()[SO.getFace(i / 3).brushIndice], 1), face);
+									screenPanel.DrawPolygon(new Pen(SO.getBrushes()[SO.getFace(i).brushIndice], 1), face);
 								else
 									screenPanel.DrawPolygon(new Pen(SO.getBrush(), 1), face);
 								break;
@@ -201,7 +205,7 @@ namespace RudimentaryGameEngine
 							case RenderType.Outline:
 								if (SO.getBrushes().Length > 1)
 								{
-									screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i / 3).brushIndice], face);
+									screenPanel.FillPolygon(SO.getBrushes()[SO.getFace(i).brushIndice], face);
 									screenPanel.DrawPolygon(new Pen(Color.Black, 1), face);
 								}
 								else

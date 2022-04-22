@@ -20,6 +20,7 @@ namespace RudimentaryGameEngine
 		private Point3F scale = new Point3F(1, 1, 1);
 		private Point[] screenPoints;
 		private face[] faces = new face[0];
+		private face[] faceMap = new face[0];
 		private int triCount = 0;
 		private float depth = 0;
 		private SolidBrush[] brushes = null;
@@ -27,7 +28,8 @@ namespace RudimentaryGameEngine
 		private int colorNoise = 15;
 		private bool noisy = false;
 
-		public SceneObject(string name, Point3F location, World parent, Point3F[] transformedPointOffsets, Point3F[] scaledPointOffsets, Point3F[] initialPointOffsets, Point3F rotation, Point3F scale, Point[] screenPoints, face[] faces, int triCount, float depth, SolidBrush[] brushes, Pen pen)
+		#region Constructors
+		public SceneObject(string name, Point3F location, World parent, Point3F[] transformedPointOffsets, Point3F[] scaledPointOffsets, Point3F[] initialPointOffsets, Point3F rotation, Point3F scale, Point[] screenPoints, face[] faces, face[] faceMap, int triCount, float depth, SolidBrush[] brushes, Pen pen)
 		{
 			this.name = name;
 			this.location = location.deepCopy();
@@ -51,9 +53,11 @@ namespace RudimentaryGameEngine
 				this.screenPoints[i] = new Point(screenPoints[i].X, screenPoints[i].Y);
 			}
 			this.faces = new face[faces.Length];
+			this.faceMap = new face[faceMap.Length];
 			for (int i = 0; i < faces.Length; i++)
 			{
 				this.faces[i] = faces[i].deepCopy();
+				this.faceMap[i] = faceMap[i];
 				faces[i].setParent(this);
 			}
 			this.triCount = triCount;
@@ -191,7 +195,15 @@ namespace RudimentaryGameEngine
 			this.brushes = new SolidBrush[] { brush };
 			this.location = location;
 		}
+		#endregion
 
+		public float calculateDepth(Point3F origin)
+		{
+			Point3F diff = location.deepCopy() - origin.deepCopy();
+			float mag = diff.magnitude();
+			setDepth(mag);
+			return depth;
+		}
 
 		public float getDepth()
 		{
@@ -210,9 +222,10 @@ namespace RudimentaryGameEngine
 
 		public SceneObject deepCopy()
 		{
-			return new SceneObject(name, location, parent, transformedPointOffsets, scaledPointOffsets, initialPointOffsets, rotation, scale, screenPoints, faces, triCount, depth, brushes, pen);
+			return new SceneObject(name, location, parent, transformedPointOffsets, scaledPointOffsets, initialPointOffsets, rotation, scale, screenPoints, faces, faceMap, triCount, depth, brushes, pen);
 		}
 
+		#region location transform methods
 		public void translate(float x, float y, float z)
 		{
 			location.X += x;
@@ -240,6 +253,7 @@ namespace RudimentaryGameEngine
 			location.Y = translation.Y;
 			location.Z = translation.Z;
 		}
+		#endregion
 
 		public Point3F[] getPointOffsets()
 		{
@@ -254,13 +268,16 @@ namespace RudimentaryGameEngine
 		public void addFace(face face)
 		{
 			face[] newFaces = new face[faces.Length + 1];
-			for(int i = 0; i < faces.Length; i++)
+			face[] newFaceMap = new face[faceMap.Length + 1];
+			for (int i = 0; i < faces.Length; i++)
 			{
 				newFaces[i] = faces[i];
+				newFaceMap[i] = faceMap[i];
 			}
 			newFaces[faces.Length] = face;
-			triCount += face.getTriCount();
+			newFaceMap[faceMap.Length] = face;
 			faces = newFaces;
+			faceMap = newFaceMap;
 		}
 
 		public void setParent(World parent)
@@ -286,6 +303,11 @@ namespace RudimentaryGameEngine
 		public bool getNoise()
 		{
 			return noisy;
+		}
+
+		public Point[] getScreenPoints()
+		{
+			return screenPoints;
 		}
 
 		public int getNoiseValue()
@@ -335,6 +357,11 @@ namespace RudimentaryGameEngine
 		public face getFace(int i)
 		{
 			return faces[i];
+		}
+
+		public face getFaceFromMap(int i)
+		{
+			return faceMap[i];
 		}
 
 		public int getFaceCount()
@@ -456,7 +483,47 @@ namespace RudimentaryGameEngine
 			}
 		}
 
-		public Point[] getScreenTransform()
+		public face[] rasteriseObject()
+		{
+			Point3F cameraPoint = new Point3F(parent.getCamera().location.X, parent.getCamera().location.Y, parent.getCamera().location.Z);
+			float XRatio = parent.getCamera().getResolution().X * (parent.getCamera().getAspectRatio().Y / parent.getCamera().getAspectRatio().X);
+
+			for (int i = 0; i < initialPointOffsets.Length; i++)
+			{
+				Point3F difference = transformedPointOffsets[i].deepCopy() - cameraPoint;
+				Point3F screenPos = new Point3F((difference.X / difference.Z) * XRatio, (difference.Y / difference.Z) * parent.getCamera().getResolution().Y);
+				screenPoints[i] = (screenPos + new Point3F((int)parent.getCamera().getResolution().X / 2, (int)parent.getCamera().getResolution().Y / 2)).toPoint();
+			}
+
+			for (int i = 0; i < faces.Length; i++)
+			{
+				faces[i].calculateDepth();
+			}
+
+			//NEED TO UPDATE
+			//REMOVE BUBBLE SORT FOR REAL ALGORITHM
+			//bubblesort used to sort faces in order of depth
+			bool changed = true;
+			while (changed)
+			{
+				changed = false;
+				for (int i = 0; i < faces.Length - 1; i++)
+				{
+					if (faces[i].getDepth() < faces[i + 1].getDepth())
+					{
+						face temp = faces[i];
+						faces[i] = faces[i + 1];
+						faces[i + 1] = temp;
+						changed = true;
+					}
+				}
+			}
+
+			return faces;
+		}
+
+		//deprecated perspective Rasterisation code
+		/*public Point[] getScreenTransform()
 		{
 			Point[] returnPoints = new Point[3 * triCount];
 			for (int i = 0; i < transformedPointOffsets.Length; i++)
@@ -521,7 +588,7 @@ namespace RudimentaryGameEngine
 				}
 			}
 			return returnPoints;
-		}
+		}*/
 
 		public Point[] getScreenTransformOrtho()
 		{
@@ -557,21 +624,10 @@ namespace RudimentaryGameEngine
 			int ptr = 0;
 			foreach (face f in faces)
 			{
-				if (f.getTriCount() == 1)
+				for (int i = 0; i < 3; i++)
 				{
-					for (int i = 0; i < 3; i++)
-					{
-						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
-						ptr++;
-					}
-				}
-				else
-				{
-					for (int i = 0; i < 6; i++)
-					{
-						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
-						ptr++;
-					}
+					returnPoints[ptr] = screenPoints[f.pointIndices[i]];
+					ptr++;
 				}
 			}
 			return returnPoints;
@@ -584,14 +640,12 @@ namespace RudimentaryGameEngine
 		public int[] pointIndices { get; }
 		public int brushIndice { get; set; } 
 		float depth = 0;
-		int triCount = 0;
 		SceneObject parent;
 
 		public face(int[] pointIndices, int brushIndice, SceneObject parent, float depth)
 		{
 			this.depth = depth;
 			this.pointIndices = pointIndices;
-			triCount++;
 			this.brushIndice = brushIndice;
 			this.parent = parent;
 		}
@@ -599,7 +653,6 @@ namespace RudimentaryGameEngine
 		public face(int[] pointIndices, int brushIndice, SceneObject parent)
 		{
 			this.pointIndices = pointIndices;
-			triCount++;
 			this.brushIndice = brushIndice;
 			this.parent = parent;
 		}
@@ -608,7 +661,6 @@ namespace RudimentaryGameEngine
 		{
 			this.pointIndices = pointIndices;
 			this.brushIndice = 0;
-			triCount++;
 			this.parent = parent;
 		}
 
@@ -660,11 +712,6 @@ namespace RudimentaryGameEngine
 		public float getDepth()
 		{
 			return depth;
-		}
-
-		public int getTriCount()
-		{
-			return triCount;
 		}
 
 		public void setParent(SceneObject parent)

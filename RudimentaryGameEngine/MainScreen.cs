@@ -496,7 +496,7 @@ namespace RudimentaryGameEngine
 		private void NUPFaceBrush_ValueChanged(object sender, EventArgs e)
 		{
 			if (!inputLock)
-				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(Convert.ToInt32(NUPFace.Value) - 1).brushIndice = Convert.ToInt32(NUPFaceBrush.Value) - 1;
+				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceFromMap(Convert.ToInt32(NUPFace.Value) - 1).brushIndice = Convert.ToInt32(NUPFaceBrush.Value) - 1;
 		}
 
 		private void NUPFace_ValueChanged(object sender, EventArgs e)
@@ -504,7 +504,7 @@ namespace RudimentaryGameEngine
 			if (!inputLock)
 			{
 				inputLock = true;
-				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(Convert.ToInt32(NUPFace.Value) - 1).brushIndice + 1;
+				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceFromMap(Convert.ToInt32(NUPFace.Value) - 1).brushIndice + 1;
 				inputLock = false;
 			}
 		}
