@@ -72,6 +72,7 @@ namespace RudimentaryGameEngine
 			if (cmbBoxSceneObjects.Items[cmbBoxSceneObjects.SelectedIndex] != null)
 			{
 				world.selectedObjectIndex = cmbBoxSceneObjects.SelectedIndex;
+				world.selectedFaceIndex = -1;
 
 				SceneObjectGPBox.Enabled = true;
 

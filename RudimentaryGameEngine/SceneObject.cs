@@ -676,14 +676,6 @@ namespace RudimentaryGameEngine
 		public void calculateDepth()
 		{
 			//average point depth
-			/*float sum = 0;
-			foreach (int i in pointIndices)
-			{
-				sum += parent.getPointOffsets()[i].calculateDepth(parent.getParent().getCamera().location);
-			}
-			depth = (sum / pointIndices.Length);*/
-
-			//average of 2 point depth
 			float sum = 0;
 			sum += parent.getPointOffsets()[pointIndices[0]].calculateDepth(parent.getParent().getCamera().location);
 			sum += parent.getPointOffsets()[pointIndices[1]].calculateDepth(parent.getParent().getCamera().location);
