@@ -10,6 +10,7 @@ namespace RudimentaryGameEngine
 	public class Camera
 	{
 		public Point3F location { get; }
+		public Point3F rotation = new Point3F(0, 0, 0);
 		private PointF Resolution = new PointF(640, 480);
 		private PointF AspectRatio = new PointF(4, 3);
 		private float screenDepth = 40;
@@ -31,9 +32,18 @@ namespace RudimentaryGameEngine
 
 		public void translate(Point3F translation)
 		{
+			translation = translation.rotate(new Point3F(0, 1, 0), -rotation.Y);
+
 			location.X += translation.X;
 			location.Y += translation.Y;
 			location.Z += translation.Z;
+		}
+
+		public void rotate(Point3F rotation)
+		{
+			this.rotation.X += rotation.X;
+			this.rotation.Y += rotation.Y;
+			this.rotation.Z += rotation.Z;
 		}
 
 		public float getDepth()

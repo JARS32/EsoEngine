@@ -30,8 +30,8 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.pcBoxScreen = new System.Windows.Forms.PictureBox();
-			this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
-			this.MenuStrip = new System.Windows.Forms.MenuStrip();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,7 +100,7 @@
 			this.lblCameraARY = new System.Windows.Forms.Label();
 			this.lblCameraResY = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pcBoxScreen)).BeginInit();
-			this.MenuStrip.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocZ)).BeginInit();
@@ -136,22 +136,22 @@
 			this.pcBoxScreen.TabStop = false;
 			this.pcBoxScreen.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pcBoxScreen_MouseClick);
 			// 
-			// UpdateTimer
+			// timer1
 			// 
-			this.UpdateTimer.Enabled = true;
-			this.UpdateTimer.Interval = 16;
-			this.UpdateTimer.Tick += new System.EventHandler(this.timer1_Tick);
+			this.timer1.Enabled = true;
+			this.timer1.Interval = 16;
+			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
 			// 
-			// MenuStrip
+			// menuStrip1
 			// 
-			this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.gameToolStripMenuItem});
-			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
-			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(902, 24);
-			this.MenuStrip.TabIndex = 11;
-			this.MenuStrip.Text = "menuStrip1";
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(902, 24);
+			this.menuStrip1.TabIndex = 11;
+			this.menuStrip1.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -279,7 +279,7 @@
 			this.cmbBoxSceneObjects.Name = "cmbBoxSceneObjects";
 			this.cmbBoxSceneObjects.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.cmbBoxSceneObjects.Size = new System.Drawing.Size(219, 21);
-			this.cmbBoxSceneObjects.TabIndex = 1;
+			this.cmbBoxSceneObjects.TabIndex = 12;
 			this.cmbBoxSceneObjects.SelectedIndexChanged += new System.EventHandler(this.cmbBoxSceneObjects_SelectedIndexChanged);
 			// 
 			// lblLocZ
@@ -349,7 +349,7 @@
             -2147483648});
 			this.NUPLocX.Name = "NUPLocX";
 			this.NUPLocX.Size = new System.Drawing.Size(57, 20);
-			this.NUPLocX.TabIndex = 2;
+			this.NUPLocX.TabIndex = 23;
 			this.NUPLocX.ValueChanged += new System.EventHandler(this.NUPLocX_ValueChanged);
 			// 
 			// NUPLocY
@@ -369,7 +369,7 @@
             -2147483648});
 			this.NUPLocY.Name = "NUPLocY";
 			this.NUPLocY.Size = new System.Drawing.Size(57, 20);
-			this.NUPLocY.TabIndex = 3;
+			this.NUPLocY.TabIndex = 24;
 			this.NUPLocY.ValueChanged += new System.EventHandler(this.NUPLocY_ValueChanged);
 			// 
 			// NUPLocZ
@@ -389,7 +389,7 @@
             -2147483648});
 			this.NUPLocZ.Name = "NUPLocZ";
 			this.NUPLocZ.Size = new System.Drawing.Size(57, 20);
-			this.NUPLocZ.TabIndex = 4;
+			this.NUPLocZ.TabIndex = 25;
 			this.NUPLocZ.ValueChanged += new System.EventHandler(this.NUPLocZ_ValueChanged);
 			// 
 			// btnTrash
@@ -398,7 +398,7 @@
 			this.btnTrash.Location = new System.Drawing.Point(182, 16);
 			this.btnTrash.Name = "btnTrash";
 			this.btnTrash.Size = new System.Drawing.Size(31, 32);
-			this.btnTrash.TabIndex = 40;
+			this.btnTrash.TabIndex = 26;
 			this.btnTrash.Text = "🗑";
 			this.btnTrash.UseVisualStyleBackColor = true;
 			this.btnTrash.Click += new System.EventHandler(this.btnTrash_Click);
@@ -420,7 +420,7 @@
             -2147483648});
 			this.NUPRotZ.Name = "NUPRotZ";
 			this.NUPRotZ.Size = new System.Drawing.Size(57, 20);
-			this.NUPRotZ.TabIndex = 7;
+			this.NUPRotZ.TabIndex = 36;
 			this.NUPRotZ.ValueChanged += new System.EventHandler(this.NUPRotZ_ValueChanged);
 			// 
 			// NUPRotY
@@ -440,7 +440,7 @@
             -2147483648});
 			this.NUPRotY.Name = "NUPRotY";
 			this.NUPRotY.Size = new System.Drawing.Size(57, 20);
-			this.NUPRotY.TabIndex = 6;
+			this.NUPRotY.TabIndex = 35;
 			this.NUPRotY.ValueChanged += new System.EventHandler(this.NUPRotY_ValueChanged);
 			// 
 			// NUPRotX
@@ -460,7 +460,7 @@
             -2147483648});
 			this.NUPRotX.Name = "NUPRotX";
 			this.NUPRotX.Size = new System.Drawing.Size(57, 20);
-			this.NUPRotX.TabIndex = 5;
+			this.NUPRotX.TabIndex = 34;
 			this.NUPRotX.ValueChanged += new System.EventHandler(this.NUPRotX_ValueChanged);
 			// 
 			// lblRotation
@@ -520,7 +520,7 @@
 			// 
 			this.CHKBoxNoisy.AutoSize = true;
 			this.CHKBoxNoisy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CHKBoxNoisy.Location = new System.Drawing.Point(163, 245);
+			this.CHKBoxNoisy.Location = new System.Drawing.Point(166, 245);
 			this.CHKBoxNoisy.Name = "CHKBoxNoisy";
 			this.CHKBoxNoisy.Size = new System.Drawing.Size(56, 19);
 			this.CHKBoxNoisy.TabIndex = 38;
@@ -602,7 +602,7 @@
             0});
 			this.NUPBrush.Name = "NUPBrush";
 			this.NUPBrush.Size = new System.Drawing.Size(43, 20);
-			this.NUPBrush.TabIndex = 11;
+			this.NUPBrush.TabIndex = 54;
 			this.NUPBrush.Value = new decimal(new int[] {
             1,
             0,
@@ -668,7 +668,7 @@
             0});
 			this.NUPFaceBrush.Name = "NUPFaceBrush";
 			this.NUPFaceBrush.Size = new System.Drawing.Size(43, 20);
-			this.NUPFaceBrush.TabIndex = 13;
+			this.NUPFaceBrush.TabIndex = 49;
 			this.NUPFaceBrush.Value = new decimal(new int[] {
             1,
             0,
@@ -702,7 +702,7 @@
             0});
 			this.NUPFace.Name = "NUPFace";
 			this.NUPFace.Size = new System.Drawing.Size(43, 20);
-			this.NUPFace.TabIndex = 12;
+			this.NUPFace.TabIndex = 47;
 			this.NUPFace.Value = new decimal(new int[] {
             1,
             0,
@@ -746,7 +746,7 @@
             -2147483648});
 			this.NUPScaleZ.Name = "NUPScaleZ";
 			this.NUPScaleZ.Size = new System.Drawing.Size(57, 20);
-			this.NUPScaleZ.TabIndex = 10;
+			this.NUPScaleZ.TabIndex = 45;
 			this.NUPScaleZ.ValueChanged += new System.EventHandler(this.NUPScaleZ_ValueChanged);
 			// 
 			// NUPScaleX
@@ -766,7 +766,7 @@
             -2147483648});
 			this.NUPScaleX.Name = "NUPScaleX";
 			this.NUPScaleX.Size = new System.Drawing.Size(57, 20);
-			this.NUPScaleX.TabIndex = 8;
+			this.NUPScaleX.TabIndex = 43;
 			this.NUPScaleX.ValueChanged += new System.EventHandler(this.NUPScaleX_ValueChanged);
 			// 
 			// NUPScaleY
@@ -786,7 +786,7 @@
             -2147483648});
 			this.NUPScaleY.Name = "NUPScaleY";
 			this.NUPScaleY.Size = new System.Drawing.Size(57, 20);
-			this.NUPScaleY.TabIndex = 9;
+			this.NUPScaleY.TabIndex = 44;
 			this.NUPScaleY.ValueChanged += new System.EventHandler(this.NUPScaleY_ValueChanged);
 			// 
 			// lblScale
@@ -837,12 +837,11 @@
 			this.CMBBoxRenderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CMBBoxRenderType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.CMBBoxRenderType.FormattingEnabled = true;
-			this.CMBBoxRenderType.ItemHeight = 13;
 			this.CMBBoxRenderType.Location = new System.Drawing.Point(89, 124);
 			this.CMBBoxRenderType.Name = "CMBBoxRenderType";
 			this.CMBBoxRenderType.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.CMBBoxRenderType.Size = new System.Drawing.Size(123, 21);
-			this.CMBBoxRenderType.TabIndex = 18;
+			this.CMBBoxRenderType.TabIndex = 40;
 			this.CMBBoxRenderType.SelectedIndexChanged += new System.EventHandler(this.CMBBoxRenderType_SelectedIndexChanged);
 			this.CMBBoxRenderType.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.CMBBoxRenderType_PreviewKeyDown);
 			// 
@@ -862,7 +861,7 @@
             0});
 			this.NUPCameraResX.Name = "NUPCameraResX";
 			this.NUPCameraResX.Size = new System.Drawing.Size(83, 20);
-			this.NUPCameraResX.TabIndex = 14;
+			this.NUPCameraResX.TabIndex = 41;
 			this.NUPCameraResX.Value = new decimal(new int[] {
             640,
             0,
@@ -886,7 +885,7 @@
             0});
 			this.NUPCameraResY.Name = "NUPCameraResY";
 			this.NUPCameraResY.Size = new System.Drawing.Size(83, 20);
-			this.NUPCameraResY.TabIndex = 15;
+			this.NUPCameraResY.TabIndex = 42;
 			this.NUPCameraResY.Value = new decimal(new int[] {
             480,
             0,
@@ -905,7 +904,7 @@
             0});
 			this.NUPCameraARX.Name = "NUPCameraARX";
 			this.NUPCameraARX.Size = new System.Drawing.Size(83, 20);
-			this.NUPCameraARX.TabIndex = 16;
+			this.NUPCameraARX.TabIndex = 44;
 			this.NUPCameraARX.Value = new decimal(new int[] {
             4,
             0,
@@ -924,7 +923,7 @@
             0});
 			this.NUPCameraARY.Name = "NUPCameraARY";
 			this.NUPCameraARY.Size = new System.Drawing.Size(83, 20);
-			this.NUPCameraARY.TabIndex = 17;
+			this.NUPCameraARY.TabIndex = 43;
 			this.NUPCameraARY.Value = new decimal(new int[] {
             3,
             0,
@@ -975,7 +974,7 @@
             0});
 			this.NUPCameraSpeed.Name = "NUPCameraSpeed";
 			this.NUPCameraSpeed.Size = new System.Drawing.Size(123, 20);
-			this.NUPCameraSpeed.TabIndex = 19;
+			this.NUPCameraSpeed.TabIndex = 64;
 			this.NUPCameraSpeed.Value = new decimal(new int[] {
             100,
             0,
@@ -1072,10 +1071,10 @@
 			this.Controls.Add(this.CameraGPBox);
 			this.Controls.Add(this.SceneObjectGPBox);
 			this.Controls.Add(this.pcBoxScreen);
-			this.Controls.Add(this.MenuStrip);
+			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.cmbBoxSceneObjects);
 			this.KeyPreview = true;
-			this.MainMenuStrip = this.MenuStrip;
+			this.MainMenuStrip = this.menuStrip1;
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.MinimumSize = new System.Drawing.Size(900, 570);
 			this.Name = "MainScreen";
@@ -1085,8 +1084,8 @@
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
 			((System.ComponentModel.ISupportInitialize)(this.pcBoxScreen)).EndInit();
-			this.MenuStrip.ResumeLayout(false);
-			this.MenuStrip.PerformLayout();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocX)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NUPLocZ)).EndInit();
@@ -1117,8 +1116,8 @@
 
 		#endregion
 		private System.Windows.Forms.PictureBox pcBoxScreen;
-		private System.Windows.Forms.Timer UpdateTimer;
-		private System.Windows.Forms.MenuStrip MenuStrip;
+		private System.Windows.Forms.Timer timer1;
+		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;

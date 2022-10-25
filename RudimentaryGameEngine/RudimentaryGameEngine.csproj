@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="Controller.cs" />
     <Compile Include="MainScreen.cs">
       <SubType>Form</SubType>
     </Compile>

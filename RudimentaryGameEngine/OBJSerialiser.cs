@@ -11,7 +11,7 @@ namespace RudimentaryGameEngine
 {
 	public class OBJSerialiser
 	{
-		public static string[] openObj(string path)
+		public string[] openObj(string path)
 		{
 			if (!File.Exists(path))
 				return null;
@@ -19,7 +19,7 @@ namespace RudimentaryGameEngine
 			return File.ReadAllLines(path);
 		}
 
-		public static SceneObject loadObject(World world)
+		public SceneObject loadObject(World world)
 		{
 			OpenFileDialog file = new OpenFileDialog();
 			file.Filter = "obj files (*.obj)|*.obj";

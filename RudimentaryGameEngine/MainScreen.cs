@@ -18,6 +18,8 @@ namespace RudimentaryGameEngine
 	{
 		public World world = new World();
 		public Primitives primitives = new Primitives();
+		public OBJSerialiser serialiser = new OBJSerialiser();
+		public Utilities utils = new Utilities();
 		public Dictionary<string, SceneObject> objectTypes = new Dictionary<string, SceneObject>();
 		public Bitmap brushPreviewBM = new Bitmap(72, 27);
 		public Bitmap colourPreviewBM = new Bitmap(150, 22);
@@ -58,22 +60,19 @@ namespace RudimentaryGameEngine
 		{
 			//if ()
 			//MessageBox.Show($"Form.KeyPress: '{e.KeyCode}' pressed.");
-			world.getController().enableKey(e.KeyCode.ToString());
+			world.enableKey(e.KeyCode.ToString());
 		}
 
 		private void Form1_KeyUp(object sender, KeyEventArgs e)
 		{
 			//MessageBox.Show($"Form.KeyPress: '{e.KeyCode}' pressed.");
-			world.getController().disableKey(e.KeyCode.ToString());
+			world.disableKey(e.KeyCode.ToString());
 		}
 
 		private void cmbBoxSceneObjects_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cmbBoxSceneObjects.Items[cmbBoxSceneObjects.SelectedIndex] != null)
 			{
-				world.selectedObjectIndex = cmbBoxSceneObjects.SelectedIndex;
-				world.selectedFaceIndex = -1;
-
 				SceneObjectGPBox.Enabled = true;
 
 				inputLock = true;
@@ -166,21 +165,24 @@ namespace RudimentaryGameEngine
 		{
 			NUPRotX.Value = NUPRotX.Value % 360;
 			if (!inputLock)
-				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
+				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateLocal(Convert.ToSingle(NUPRotX.Value), "x");
+			//world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
 		}
 
 		private void NUPRotY_ValueChanged(object sender, EventArgs e)
 		{
 			NUPRotY.Value = NUPRotY.Value % 360;
 			if (!inputLock)
-				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
+				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateWorld(Convert.ToSingle(NUPRotY.Value), "y");
+			//world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
 		}
 
 		private void NUPRotZ_ValueChanged(object sender, EventArgs e)
 		{
 			NUPRotZ.Value = NUPRotZ.Value % 360;
 			if (!inputLock)
-				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
+				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateLocal(Convert.ToSingle(NUPRotZ.Value), "z");
+			//world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].rotateTo(Convert.ToSingle(NUPRotX.Value), Convert.ToSingle(NUPRotY.Value), Convert.ToSingle(NUPRotZ.Value));
 		}
 
 		private void NUPScaleX_ValueChanged(object sender, EventArgs e)
@@ -326,7 +328,7 @@ namespace RudimentaryGameEngine
 			test[5] = new Point3F(20, -20, 20);
 			test[6] = new Point3F(20, 20, 20);
 			test[7] = new Point3F(-20, 20, 20);
-			face[] testFaces = new face[12];
+			//face[] testFaces = new face[12];
 			SceneObject obj = new SceneObject(new Point3F(world.getCamera().location.X, world.getCamera().location.Y, world.getCamera().location.Z + 200), test, rubikBrushes);
 			obj.addFace(new face(new int[] { 0, 1, 2 }, 5, obj));
 			obj.addFace(new face(new int[] { 0, 2, 3 }, 5, obj));
@@ -374,7 +376,7 @@ namespace RudimentaryGameEngine
 
 		private void loadObjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SceneObject SO = OBJSerialiser.loadObject(world);
+			SceneObject SO = serialiser.loadObject(world);
 
 			if (SO == null)
 				return;
@@ -441,15 +443,15 @@ namespace RudimentaryGameEngine
 
 		private void loadColourPreview(bool resetValues = true)
 		{
-			NUPBrush.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
+			NUPBrush.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
 			if (resetValues)
 				NUPBrush.Value = 1;
 
-			NUPFaceBrush.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
+			NUPFaceBrush.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length, 1, 9999999);
 			if (resetValues)
 				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(0).brushIndice + 1;
 
-			NUPFace.Maximum = Utilities.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceCount(), 1, 9999999);
+			NUPFace.Maximum = utils.Clamp(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceCount(), 1, 9999999);
 
 			updateColourPreview();
 			updateBrushPreview();
@@ -499,7 +501,7 @@ namespace RudimentaryGameEngine
 		private void NUPFaceBrush_ValueChanged(object sender, EventArgs e)
 		{
 			if (!inputLock)
-				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceFromMap(Convert.ToInt32(NUPFace.Value) - 1).brushIndice = Convert.ToInt32(NUPFaceBrush.Value) - 1;
+				world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(Convert.ToInt32(NUPFace.Value) - 1).brushIndice = Convert.ToInt32(NUPFaceBrush.Value) - 1;
 		}
 
 		private void NUPFace_ValueChanged(object sender, EventArgs e)
@@ -507,8 +509,7 @@ namespace RudimentaryGameEngine
 			if (!inputLock)
 			{
 				inputLock = true;
-				world.selectedFaceIndex = Convert.ToInt32(NUPFace.Value - 1);
-				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFaceFromMap(Convert.ToInt32(NUPFace.Value) - 1).brushIndice + 1;
+				NUPFaceBrush.Value = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getFace(Convert.ToInt32(NUPFace.Value) - 1).brushIndice + 1;
 				inputLock = false;
 			}
 		}

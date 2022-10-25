@@ -13,20 +13,10 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region constructors
-		/// <summary>
-		/// Creates a Quaternion with a real value of 1 and all imaginary have values of 0
-		/// </summary>
 		public Quaternion()
 		{
 		}
 
-		/// <summary>
-		/// Creates a Quaternion based on the input parameters
-		/// </summary>
-		/// <param name="w">Real component of the Quaternion</param>
-		/// <param name="x">First imaginary component of the Quaternion, i</param>
-		/// <param name="y">Second imaginary component of the Quaternion, j</param>
-		/// <param name="z">Third imaginary component of the Quaternion, k</param>
 		public Quaternion(float w, float x, float y, float z)
 		{
 			this.W = w;
@@ -35,10 +25,6 @@ namespace RudimentaryGameEngine
 			this.Z = z;
 		}
 
-		/// <summary>
-		/// Creates a Quaternion that is a copy of the quaternion parameter
-		/// </summary>
-		/// <param name="q">Quaternion to copy</param>
 		public Quaternion(Quaternion q)
 		{
 			this.W = q.W;
@@ -49,12 +35,7 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region operators
-		/// <summary>
-		/// calculates the hamilton product of the (Quaternion 'Left') * (Quaternion 'Right'), order important as the calculation isn't commutive
-		/// </summary>
-		/// <param name="left">Quaternion on the left side of the equation</param>
-		/// <param name="right">Quaternion on the right side of the equation</param>
-		/// <returns>Quaternion that is the Hamilton product of the parameter Quaternions</returns>
+		//calculates the hamilton product of the (Quaternion 'Left') * (Quaternion 'Right'), order important as the calculation isn't commutive
 		public static Quaternion operator *(Quaternion left, Quaternion right)
 		{
 			Quaternion r = new Quaternion(left);
@@ -65,11 +46,7 @@ namespace RudimentaryGameEngine
 			return r;
 		}
 
-		/// <summary>
-		/// calculates the conjugate of the quaternion which in the case of unit quaternions used in rotations is the same as it's inverse
-		/// </summary>
-		/// <param name="right">The quaternion whos Conjugate is to be calculated</param>
-		/// <returns>The conjugate of the parameter quaternion</returns>
+		//calculates the conjugate of the quaternion which in the case of unit quaternions used in rotations is the same as it's inverse
 		public static Quaternion operator -(Quaternion right)
 		{
 			Quaternion r = new Quaternion();
@@ -82,19 +59,13 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region methods
-		/// <summary>
-		/// calculates the magnitude of the quaternions, effectively 4 dimensional pythagoras
-		/// </summary>
-		/// <returns>the magnitude of the quaternion</returns>
+		//calculates the magnitude of the quaternions, effectively 4 dimensional pythagoras
 		public float magnitude()
 		{
 			return Convert.ToSingle(Math.Pow(Convert.ToDouble((W * W) + (X * X) + (Y * Y) + (Z * Z)), (double)1 / 4));
 		}
 
-		/// <summary>
-		/// calculates the normalised version of the quaternion, effectively transforms it into a unit vector with the same direction
-		/// </summary>
-		/// <returns>the normalised version of this quaternion</returns>
+		//calculates the normalised version of the quaternion, effectively transforms it into a unit vector with the same direction
 		public Quaternion normalise()
 		{
 			float vectorMag = magnitude();
@@ -114,10 +85,7 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region type transforms and get/sets
-		/// <summary>
-		/// returns a Point3 using the imaginary components of the quaternion
-		/// </summary>
-		/// <returns>a Point3F of the imaginary components of the quaternion</returns>
+		//returns a Point3 using the imaginary components of the quaternion
 		public Point3F toPoint3F()
 		{
 			return new Point3F(X, Y, Z);

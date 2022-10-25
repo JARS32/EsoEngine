@@ -8,7 +8,7 @@ namespace RudimentaryGameEngine
 {
 	public class Utilities
 	{
-		public static int Clamp(int value, int min, int max)
+		public int Clamp(int value, int min, int max)
 		{
 			if (value > max)
 				return max;

@@ -13,14 +13,14 @@ namespace RudimentaryGameEngine
 		private string name = "";
 		private Point3F location;
 		private World parent;
-		private Point3F[] initialPointOffsets;
-		private Point3F[] scaledPointOffsets;
-		private Point3F[] transformedPointOffsets;
+		private Point3F[] vertices;
+		private Point3F TBforwardVector = new Point3F(0, 0, 1);
+		private Point3F TBupVector = new Point3F(0, 1, 0);
+		private Point3F TBrightVector = new Point3F(1, 0, 0);
 		private Point3F rotation = new Point3F(0, 0, 0);
 		private Point3F scale = new Point3F(1, 1, 1);
 		private Point[] screenPoints;
 		private face[] faces = new face[0];
-		private face[] faceMap = new face[0];
 		private int triCount = 0;
 		private float depth = 0;
 		private SolidBrush[] brushes = null;
@@ -28,36 +28,28 @@ namespace RudimentaryGameEngine
 		private int colorNoise = 15;
 		private bool noisy = false;
 
-		#region Constructors
-		public SceneObject(string name, Point3F location, World parent, Point3F[] transformedPointOffsets, Point3F[] scaledPointOffsets, Point3F[] initialPointOffsets, Point3F rotation, Point3F scale, Point[] screenPoints, face[] faces, face[] faceMap, int triCount, float depth, SolidBrush[] brushes, Pen pen)
+		#region constructors
+		public SceneObject(string name, Point3F location, World parent, Point3F[] pointOffsets, Point3F rotation, Point3F scale, Point[] screenPoints, face[] faces, int triCount, float depth, SolidBrush[] brushes, Pen pen)
 		{
 			this.name = name;
 			this.location = location.deepCopy();
 			this.parent = parent;
-			this.initialPointOffsets = initialPointOffsets;
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
 			this.rotation = rotation.deepCopy();
 			this.scale = scale.deepCopy();
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < pointOffsets.Length; i++)
+			{
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
+			}
 			this.screenPoints = new Point[screenPoints.Length];
 			for (int i = 0; i < screenPoints.Length; i++)
 			{
 				this.screenPoints[i] = new Point(screenPoints[i].X, screenPoints[i].Y);
 			}
 			this.faces = new face[faces.Length];
-			this.faceMap = new face[faceMap.Length];
 			for (int i = 0; i < faces.Length; i++)
 			{
 				this.faces[i] = faces[i].deepCopy();
-				this.faceMap[i] = faceMap[i];
 				faces[i].setParent(this);
 			}
 			this.triCount = triCount;
@@ -73,16 +65,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, Point3F rotation, SolidBrush[] brushes)
 		{
 			this.brushes = brushes;
-			this.initialPointOffsets = pointOffsets;
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -92,16 +78,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, Point3F rotation, SolidBrush brush)
 		{
 			this.brushes = new SolidBrush[] { brush };
-			this.initialPointOffsets = pointOffsets;
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -111,16 +91,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, Point3F rotation, Pen pen)
 		{
 			this.pen = pen;
-			this.initialPointOffsets = pointOffsets;
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -130,16 +104,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, SolidBrush brush)
 		{
 			this.brushes = new SolidBrush[] { brush };
-			this.initialPointOffsets = pointOffsets;
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -149,16 +117,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, SolidBrush[] brushes)
 		{
 			this.brushes = brushes;
-			this.initialPointOffsets = pointOffsets;
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -168,16 +130,10 @@ namespace RudimentaryGameEngine
 		public SceneObject(Point3F location, Point3F[] pointOffsets, Pen pen)
 		{
 			this.pen = pen;
-			this.initialPointOffsets = pointOffsets;
-			this.transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			this.scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			this.vertices = new Point3F[pointOffsets.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				this.scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				this.transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
+				this.vertices[i] = new Point3F(pointOffsets[i].X, pointOffsets[i].Y, pointOffsets[i].Z);
 			}
 			this.screenPoints = new Point[pointOffsets.Length];
 			this.location = location;
@@ -197,14 +153,7 @@ namespace RudimentaryGameEngine
 		}
 		#endregion
 
-		public float calculateDepth(Point3F origin)
-		{
-			Point3F diff = location.deepCopy() - origin.deepCopy();
-			float mag = diff.magnitude();
-			setDepth(mag);
-			return depth;
-		}
-
+		#region get sets
 		public float getDepth()
 		{
 			return depth;
@@ -220,64 +169,9 @@ namespace RudimentaryGameEngine
 			return scale;
 		}
 
-		public SceneObject deepCopy()
-		{
-			return new SceneObject(name, location, parent, transformedPointOffsets, scaledPointOffsets, initialPointOffsets, rotation, scale, screenPoints, faces, faceMap, triCount, depth, brushes, pen);
-		}
-
-		#region location transform methods
-		public void translate(float x, float y, float z)
-		{
-			location.X += x;
-			location.Y += y;
-			location.Z += z;
-		}
-
-		public void translate(Point3F translation)
-		{
-			location.X += translation.X;
-			location.Y += translation.Y;
-			location.Z += translation.Z;
-		}
-
-		public void teleport(float x, float y, float z)
-		{
-			location.X = x;
-			location.Y = y;
-			location.Z = z;
-		}
-
-		public void teleport(Point3F translation)
-		{
-			location.X = translation.X;
-			location.Y = translation.Y;
-			location.Z = translation.Z;
-		}
-		#endregion
-
 		public Point3F[] getPointOffsets()
 		{
-			return transformedPointOffsets;
-		}
-
-		public Point3F[] getInitialPointOffsets()
-		{
-			return initialPointOffsets;
-		}
-
-		public void addFace(face face)
-		{
-			face[] newFaces = new face[faces.Length + 1];
-			face[] newFaceMap = new face[faceMap.Length + 1];
-			for (int i = 0; i < faces.Length; i++)
-			{
-				newFaces[i] = faces[i];
-				newFaceMap[i] = faceMap[i];
-			}
-			newFaces[faces.Length] = face;
-			newFaceMap[faceMap.Length] = face;
-			faces = newFaces;
-			faceMap = newFaceMap;
+			return vertices;
 		}
 
 		public void setParent(World parent)
@@ -303,11 +197,6 @@ namespace RudimentaryGameEngine
 		public bool getNoise()
 		{
 			return noisy;
-		}
-
-		public Point[] getScreenPoints()
-		{
-			return screenPoints;
 		}
 
 		public int getNoiseValue()
@@ -359,11 +248,6 @@ namespace RudimentaryGameEngine
 			return faces[i];
 		}
 
-		public face getFaceFromMap(int i)
-		{
-			return faceMap[i];
-		}
-
 		public int getFaceCount()
 		{
 			return faces.Length;
@@ -382,13 +266,68 @@ namespace RudimentaryGameEngine
 		public void setOffsets(Point3F[] verts)
 		{
 			screenPoints = new Point[verts.Length];
-			initialPointOffsets = verts;
-			transformedPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-				transformedPointOffsets[i] = initialPointOffsets[i].deepCopy();
-			scaledPointOffsets = new Point3F[initialPointOffsets.Length];
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-				scaledPointOffsets[i] = initialPointOffsets[i].deepCopy();
+			vertices = verts;
+		}
+
+		public void setScale(float ScaleX, float ScaleY, float ScaleZ)
+		{
+			float scaleFactorX = ScaleX / this.scale.X;
+			float scaleFactorY = ScaleY / this.scale.Y;
+			float scaleFactorZ = ScaleZ / this.scale.Z;
+			this.scale = new Point3F(ScaleX, ScaleY, ScaleZ);
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				vertices[i] = new Point3F(vertices[i].X * scaleFactorX, vertices[i].Y * scaleFactorY, vertices[i].Z * scaleFactorZ);
+			}
+			/*Point3F oldRotation = rotation.deepCopy();
+			rotation = new Point3F(0);
+			rotateTo(oldRotation.X, oldRotation.Y, oldRotation.Z);*/
+		}
+		#endregion
+
+		public SceneObject deepCopy()
+		{
+			return new SceneObject(name, location, parent, vertices, rotation, scale, screenPoints, faces, triCount, depth, brushes, pen);
+		}
+
+		public void translate(float x, float y, float z)
+		{
+			location.X += x;
+			location.Y += y;
+			location.Z += z;
+		}
+
+		public void translate(Point3F translation)
+		{
+			location.X += translation.X;
+			location.Y += translation.Y;
+			location.Z += translation.Z;
+		}
+
+		public void teleport(float x, float y, float z)
+		{
+			location.X = x;
+			location.Y = y;
+			location.Z = z;
+		}
+
+		public void teleport(Point3F translation)
+		{
+			location.X = translation.X;
+			location.Y = translation.Y;
+			location.Z = translation.Z;
+		}
+
+		public void addFace(face face)
+		{
+			face[] newFaces = new face[faces.Length + 1];
+			for(int i = 0; i < faces.Length; i++)
+			{
+				newFaces[i] = faces[i];
+			}
+			newFaces[faces.Length] = face;
+			triCount += face.getTriCount();
+			faces = newFaces;
 		}
 
 		public void rotateQuat(Point3F axis, float angle)
@@ -398,145 +337,94 @@ namespace RudimentaryGameEngine
 			Quaternion axisQuat = new Quaternion(0, axisCopy.X, axisCopy.Y, axisCopy.Z);
 		}
 
-		public void rotateTo(double angleX, double angleY, double angleZ)
+		public void rotateWorld(double angle, string plane)
 		{
-			angleX *= Math.PI / 180;
-			angleY *= Math.PI / 180;
-			angleZ *= Math.PI / 180;
-			Quaternion qr = new Quaternion();
-			Quaternion qXr = QuaternionHelper.fromAxisAngle(new Point3F(1, 0, 0), Convert.ToSingle(angleX)).normalise();
-			Quaternion qYr = QuaternionHelper.fromAxisAngle(new Point3F(0, 1, 0), Convert.ToSingle(angleY)).normalise();
-			Quaternion qZr = QuaternionHelper.fromAxisAngle(new Point3F(0, 0, 1), Convert.ToSingle(angleZ)).normalise();
-			Quaternion qXrInv = -qXr;
-			Quaternion qYrInv = -qYr;
-			Quaternion qZrInv = -qZr;
+			double radAngle;
+			Quaternion qr;
 
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+			switch (plane)
 			{
-				transformedPointOffsets[i] = scaledPointOffsets[i].deepCopy();
+				case "x":
+					radAngle = (angle - rotation.X) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(new Point3F(1, 0, 0), Convert.ToSingle(radAngle)).normalise();
+					rotation.X = Convert.ToSingle(angle) % 360;
+					break;
+				case "y":
+					radAngle = (angle - rotation.Y) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(new Point3F(0, 1, 0), Convert.ToSingle(radAngle)).normalise();
+					rotation.Y = Convert.ToSingle(angle) % 360;
+					break;
+				case "z":
+					radAngle = (angle - rotation.Z) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(new Point3F(0, 0, 1), Convert.ToSingle(radAngle)).normalise();
+					rotation.Z = Convert.ToSingle(angle) % 360;
+					break;
+				default:
+					return;
 			}
-			for (int i = 0; i < initialPointOffsets.Length; i++)
+
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				transformedPointOffsets[i] = transformedPointOffsets[i].rotate(qXr, qXrInv);
-				transformedPointOffsets[i] = transformedPointOffsets[i].rotate(qYr, qYrInv);
-				transformedPointOffsets[i] = transformedPointOffsets[i].rotate(qZr, qZrInv);
+				vertices[i] = vertices[i].rotate(qr);
+			}
+
+			TBforwardVector = TBforwardVector.rotate(qr);
+			TBupVector = TBupVector.rotate(qr);
+			TBrightVector = TBrightVector.rotate(qr);
+		}
+
+		public void rotateLocal(double angle, string plane)
+		{
+			double radAngle;
+			Quaternion qr;
+
+			switch (plane)
+			{
+				case "x":
+					radAngle = (angle - rotation.X) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(TBrightVector, Convert.ToSingle(radAngle)).normalise();
+					rotation.X = Convert.ToSingle(angle) % 360;
+					TBforwardVector = TBforwardVector.rotate(qr);
+					break;
+				case "y":
+					radAngle = (angle - rotation.Y) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(TBupVector, Convert.ToSingle(radAngle)).normalise();
+					rotation.Y = Convert.ToSingle(angle) % 360;
+					TBforwardVector = TBforwardVector.rotate(qr);
+					TBrightVector = TBrightVector.rotate(qr);
+					break;
+				case "z":
+					radAngle = (angle - rotation.Z) * Math.PI / 180;
+					qr = QuaternionHelper.fromAxisAngle(TBforwardVector, Convert.ToSingle(radAngle)).normalise();
+					rotation.Z = Convert.ToSingle(angle) % 360;
+					break;
+				default:
+					return;
+			}
+
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				vertices[i] = vertices[i].rotate(qr);
 			}
 		}
 
-		public void setScale(float ScaleX, float ScaleY, float ScaleZ)
-		{
-			this.scale = new Point3F(ScaleX, ScaleY, ScaleZ);
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				scaledPointOffsets[i] = new Point3F(initialPointOffsets[i].X * ScaleX, initialPointOffsets[i].Y * ScaleY, initialPointOffsets[i].Z * ScaleZ);
-			}
-			Point3F oldRotation = rotation.deepCopy();
-			rotation = new Point3F(0);
-			rotateTo(oldRotation.X, oldRotation.Y, oldRotation.Z);
-		}
-
-		public void rotateX(double angle)
-		{
-			rotation.X = (rotation.X + Convert.ToSingle(angle)) % 360;
-			angle *= Math.PI / 180;
-			double sin = Math.Sin(angle);
-			double cos = Math.Cos(angle);
-
-			foreach (Point3F p in transformedPointOffsets)
-			{
-				double yNew = p.Y * cos - p.Z * sin;
-				double zNew = p.Y * sin + p.Z * cos;
-				p.Y = Convert.ToSingle(yNew);
-				p.Z = Convert.ToSingle(zNew);
-			}
-		}
-
-		public void rotateY(double angle)
-		{
-			rotation.Y = (rotation.Y + Convert.ToSingle(angle)) % 360;
-			angle *= Math.PI / 180;
-			double sin = Math.Sin(angle);
-			double cos = Math.Cos(angle);
-
-			foreach (Point3F p in transformedPointOffsets)
-			{
-				double xNew = p.X * cos - p.Z * sin;
-				double zNew = p.X * sin + p.Z * cos;
-				p.X = Convert.ToSingle(xNew);
-				p.Z = Convert.ToSingle(zNew);
-			}
-		}
-
-		public void rotateZ(double angle)
-		{
-			rotation.Z = (rotation.Y + Convert.ToSingle(angle)) % 360;
-			angle *= Math.PI / 180;
-			double sin = Math.Sin(angle);
-			double cos = Math.Cos(angle);
-
-			foreach (Point3F p in transformedPointOffsets)
-			{
-				double xNew = p.X * cos - p.Y * sin;
-				double yNew = p.X * sin + p.Y * cos;
-				p.X = Convert.ToSingle(xNew);
-				p.Y = Convert.ToSingle(yNew);
-			}
-		}
-
-		/// <summary>
-		/// Calculates the screen points of all points in the object
-		/// </summary>
-		/// <returns>Array of all faces of the object ordered by depth</returns>
-		public face[] rasteriseObject()
-		{
-			Point3F cameraPoint = new Point3F(parent.getCamera().location.X, parent.getCamera().location.Y, parent.getCamera().location.Z);
-			float XRatio = parent.getCamera().getResolution().X * (parent.getCamera().getAspectRatio().Y / parent.getCamera().getAspectRatio().X);
-
-			for (int i = 0; i < initialPointOffsets.Length; i++)
-			{
-				Point3F difference = transformedPointOffsets[i].deepCopy() + location - cameraPoint;
-				Point3F screenPos = new Point3F((difference.X / difference.Z) * XRatio, (difference.Y / difference.Z) * parent.getCamera().getResolution().Y);
-				screenPoints[i] = (screenPos + new Point3F((int)parent.getCamera().getResolution().X / 2, (int)parent.getCamera().getResolution().Y / 2)).toPoint();
-			}
-
-			for (int i = 0; i < faces.Length; i++)
-			{
-				faces[i].calculateDepth();
-			}
-
-			//NEED TO UPDATE
-			//REMOVE BUBBLE SORT FOR REAL ALGORITHM
-			//bubblesort used to sort faces in order of depth
-			bool changed = true;
-			while (changed)
-			{
-				changed = false;
-				for (int i = 0; i < faces.Length - 1; i++)
-				{
-					if (faces[i].getDepth() < faces[i + 1].getDepth())
-					{
-						face temp = faces[i];
-						faces[i] = faces[i + 1];
-						faces[i + 1] = temp;
-						changed = true;
-					}
-				}
-			}
-
-			return faces;
-		}
-
-		//deprecated perspective Rasterisation code
-		/*public Point[] getScreenTransform()
+		public Point[] getScreenTransform()
 		{
 			Point[] returnPoints = new Point[3 * triCount];
-			for (int i = 0; i < transformedPointOffsets.Length; i++)
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				Point3F point = new Point3F(transformedPointOffsets[i].X + location.X, transformedPointOffsets[i].Y + location.Y, transformedPointOffsets[i].Z + location.Z);
+				Point3F worldLocation = location.deepCopy() - parent.getCamera().location.deepCopy();
+				worldLocation = worldLocation.rotate(new Point3F(0, 1, 0), parent.getCamera().rotation.Y);
+				Point3F[] worldVertices = new Point3F[vertices.Length];
+				for (int j = 0; j < vertices.Length; j++)
+				{
+					worldVertices[j] = vertices[j].rotate(new Point3F(0, 1, 0), parent.getCamera().rotation.Y);
+				}
+				Point3F point = new Point3F(worldVertices[i].X + worldLocation.X, worldVertices[i].Y + worldLocation.Y, worldVertices[i].Z + worldLocation.Z);
 				Point3F cameraPoint = new Point3F(parent.getCamera().location.X, parent.getCamera().location.Y, parent.getCamera().location.Z);
 				Point3F difference = new Point3F(point.X - cameraPoint.X, point.Y - cameraPoint.Y, point.Z - cameraPoint.Z);
 				Point3F screenPos;
-				if (difference.Z <= 0)
+				if (worldLocation.Z <= 0)
 				{
 					continue;
 				}
@@ -592,14 +480,14 @@ namespace RudimentaryGameEngine
 				}
 			}
 			return returnPoints;
-		}*/
+		}
 
 		public Point[] getScreenTransformOrtho()
 		{
 			Point[] returnPoints = new Point[3*triCount];
-			for (int i = 0; i < transformedPointOffsets.Length; i++)
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				Point point = new Point(Convert.ToInt32(transformedPointOffsets[i].X + location.X), Convert.ToInt32(transformedPointOffsets[i].Y + location.Y));
+				Point point = new Point(Convert.ToInt32(vertices[i].X + location.X), Convert.ToInt32(vertices[i].Y + location.Y));
 				Point cameraPoint = new Point(Convert.ToInt32(parent.getCamera().location.X), Convert.ToInt32(parent.getCamera().location.Y));
 				screenPoints[i] = new Point(point.X - cameraPoint.X + (int)parent.getCamera().getResolution().X/2, point.Y - cameraPoint.Y + (int)parent.getCamera().getResolution().Y / 2);
 			}
@@ -628,10 +516,21 @@ namespace RudimentaryGameEngine
 			int ptr = 0;
 			foreach (face f in faces)
 			{
-				for (int i = 0; i < 3; i++)
+				if (f.getTriCount() == 1)
 				{
-					returnPoints[ptr] = screenPoints[f.pointIndices[i]];
-					ptr++;
+					for (int i = 0; i < 3; i++)
+					{
+						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
+						ptr++;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 6; i++)
+					{
+						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
+						ptr++;
+					}
 				}
 			}
 			return returnPoints;
@@ -644,12 +543,14 @@ namespace RudimentaryGameEngine
 		public int[] pointIndices { get; }
 		public int brushIndice { get; set; } 
 		float depth = 0;
+		int triCount = 0;
 		SceneObject parent;
 
 		public face(int[] pointIndices, int brushIndice, SceneObject parent, float depth)
 		{
 			this.depth = depth;
 			this.pointIndices = pointIndices;
+			triCount++;
 			this.brushIndice = brushIndice;
 			this.parent = parent;
 		}
@@ -657,6 +558,7 @@ namespace RudimentaryGameEngine
 		public face(int[] pointIndices, int brushIndice, SceneObject parent)
 		{
 			this.pointIndices = pointIndices;
+			triCount++;
 			this.brushIndice = brushIndice;
 			this.parent = parent;
 		}
@@ -665,6 +567,7 @@ namespace RudimentaryGameEngine
 		{
 			this.pointIndices = pointIndices;
 			this.brushIndice = 0;
+			triCount++;
 			this.parent = parent;
 		}
 
@@ -677,10 +580,11 @@ namespace RudimentaryGameEngine
 		{
 			//average point depth
 			float sum = 0;
-			sum += parent.getPointOffsets()[pointIndices[0]].calculateDepth(parent.getParent().getCamera().location);
-			sum += parent.getPointOffsets()[pointIndices[1]].calculateDepth(parent.getParent().getCamera().location);
-			sum += parent.getPointOffsets()[pointIndices[2]].calculateDepth(parent.getParent().getCamera().location);
-			depth = sum / 3;
+			foreach (int i in pointIndices)
+			{
+				sum += parent.getPointOffsets()[i].calculateDepth(parent.getParent().getCamera().location);
+			}
+			depth = (sum / pointIndices.Length);
 
 			//minimum point depth
 			/*float minDepth = parent.getPointOffsets()[pointIndices[0]].calculateDepth(parent.getParent().getCamera().location);
@@ -715,6 +619,11 @@ namespace RudimentaryGameEngine
 		public float getDepth()
 		{
 			return depth;
+		}
+
+		public int getTriCount()
+		{
+			return triCount;
 		}
 
 		public void setParent(SceneObject parent)

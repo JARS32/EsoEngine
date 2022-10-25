@@ -17,13 +17,6 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region constructors
-		/// <summary>
-		/// Creates a Point3F using a location in all axis and a predetermined depth value, only useful for copying points
-		/// </summary>
-		/// <param name="x">location of point in X axis</param>
-		/// <param name="y">location of point in Y axis</param>
-		/// <param name="z">location of point in Z axis</param>
-		/// <param name="depth">magnitude of the differene between this point and another, calculated in another function and only when required</param>
 		public Point3F(float x, float y, float z, float depth)
 		{
 			this.X = x;
@@ -32,12 +25,6 @@ namespace RudimentaryGameEngine
 			this.Depth = depth;
 		}
 
-		/// <summary>
-		/// Creates a Point3F using a location in all axis
-		/// </summary>
-		/// <param name="x">location of point in X axis</param>
-		/// <param name="y">location of point in Y axis</param>
-		/// <param name="z">location of point in Z axis</param>
 		public Point3F(float x, float y, float z)
 		{
 			this.X = x;
@@ -45,11 +32,6 @@ namespace RudimentaryGameEngine
 			this.Z = z;
 		}
 
-		/// <summary>
-		/// Creates a Point3F using just the X and Y axis, useful when working with 2D points
-		/// </summary>
-		/// <param name="x">location of point in X axis</param>
-		/// <param name="y">location of point in Y axis</param>
 		public Point3F(float x, float y)
 		{
 			this.X = x;
@@ -57,10 +39,6 @@ namespace RudimentaryGameEngine
 			this.Z = 0;
 		}
 
-		/// <summary>
-		/// Creates a Point3F that has the same position in all axis
-		/// </summary>
-		/// <param name="xyz">the location of the point in all axis</param>
 		public Point3F(float xyz)
 		{
 			this.X = xyz;
@@ -70,20 +48,13 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region methods
-		/// <summary>
-		/// calculates the length of the this point as a vector
-		/// </summary>
-		/// <returns>the length or magnitude of the point from the origin, useful when using point as a vector</returns>
+		//calculates the length of the this point as a vector
 		public float magnitude()
 		{
 			return Convert.ToSingle(Math.Pow(Convert.ToDouble((X * X) + (Y * Y) + (Z * Z)), (double)1 / 3));
 		}
 
-		/// <summary>
-		/// normalises the point as if it was a vector, effectively keeps the direction while changing magnitude to 1, or whatever is passed as the parameter
-		/// </summary>
-		/// <param name="distance">the length of the vector after normalistation, defaulted to 1 for a unit sphere</param>
-		/// <returns>a new point that has the normalised values</returns>
+		//normalises the point as if it was a vector, effectively keeps the direction while changing magnitude to 1, or whatever is passed as the parameter
 		public Point3F normalise(float distance = 1)
 		{
 			float vectorMag = magnitude();
@@ -99,11 +70,7 @@ namespace RudimentaryGameEngine
 			return new Point3F(normX, normY, normZ) * distance;
 		}
 
-		/// <summary>
-		/// calculates the depth by finding the magnitude of the vector between this point and the given origin
-		/// </summary>
-		/// <param name="origin">the point from which you wish to find the distance/magnitude from</param>
-		/// <returns>the length/magnitude of the vector connecting the points</returns>
+		//calculates the depth by finding the magnitude of the vector between this point and the given origin
 		public float calculateDepth(Point3F origin)
 		{
 			Point3F difference = new Point3F(X-origin.X, Y-origin.Y, Z-origin.Z);
@@ -111,35 +78,43 @@ namespace RudimentaryGameEngine
 			return Depth;
 		}
 
-
-		/// <summary>
-		/// //creates a true copy of the point that has it's own memory address
-		/// </summary>
-		/// <returns>a deep copy of this point</returns>
+		//creates a true copy of the point that has it's own memory address
 		public Point3F deepCopy()
 		{
 			return new Point3F(X, Y, Z, Depth);
 		}
 
-		/// <summary>
-		/// converts this Point3F to a Point by dropping it's Z value
-		/// </summary>
-		/// <returns>a Point that shares its X and Y value with this Point3F</returns>
 		public Point toPoint()
 		{
 			return new Point(Convert.ToInt32(X), Convert.ToInt32(Y));
 		}
 
-		/// <summary>
-		/// calculates the points new position using a quaternion that represents a rotation around an axis
-		/// </summary>
-		/// <param name="q">the rotation quaternion to be used</param>
-		/// <param name="qInv">the conjugate or inverse of the rotation quaternion</param>
-		/// <returns>the new point after the rotation</returns>
+		//calculates the points new position using a quaternion that represents a rotation around an axis
 		public Point3F rotate(Quaternion q, Quaternion qInv)
 		{
 			Quaternion pq = new Quaternion(0, X, Y, Z);
 			Quaternion pInv = q * pq;
+			pInv *= qInv;
+			return pInv.toPoint3F();
+		}
+
+		public Point3F rotate(Quaternion q)
+		{
+			Quaternion pq = new Quaternion(0, X, Y, Z);
+			Quaternion pInv = q * pq;
+			Quaternion qInv = -q;
+			pInv *= qInv;
+			return pInv.toPoint3F();
+		}
+
+		public Point3F rotate(Point3F Axis, float Angle)
+		{ 
+			double radAngle = Angle * Math.PI / 180;
+			Quaternion q = QuaternionHelper.fromAxisAngle(Axis, Convert.ToSingle(radAngle)).normalise();
+
+			Quaternion pq = new Quaternion(0, X, Y, Z);
+			Quaternion pInv = q * pq;
+			Quaternion qInv = -q;
 			pInv *= qInv;
 			return pInv.toPoint3F();
 		}
