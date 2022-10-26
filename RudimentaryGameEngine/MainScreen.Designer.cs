@@ -476,7 +476,9 @@
 			// lblRotX
 			// 
 			this.lblRotX.AutoSize = true;
+			this.lblRotX.BackColor = System.Drawing.Color.Green;
 			this.lblRotX.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRotX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.lblRotX.Location = new System.Drawing.Point(1, 99);
 			this.lblRotX.Name = "lblRotX";
 			this.lblRotX.Size = new System.Drawing.Size(17, 13);
@@ -486,7 +488,9 @@
 			// lblRotY
 			// 
 			this.lblRotY.AutoSize = true;
+			this.lblRotY.BackColor = System.Drawing.Color.Red;
 			this.lblRotY.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRotY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.lblRotY.Location = new System.Drawing.Point(72, 99);
 			this.lblRotY.Name = "lblRotY";
 			this.lblRotY.Size = new System.Drawing.Size(17, 13);
@@ -496,7 +500,9 @@
 			// lblRotZ
 			// 
 			this.lblRotZ.AutoSize = true;
+			this.lblRotZ.BackColor = System.Drawing.Color.Blue;
 			this.lblRotZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRotZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.lblRotZ.Location = new System.Drawing.Point(143, 99);
 			this.lblRotZ.Name = "lblRotZ";
 			this.lblRotZ.Size = new System.Drawing.Size(17, 13);

@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using _3DMathFramework;
+using Point = System.Drawing.Point;
 
 // This is the code for your desktop app.
 // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
@@ -102,6 +104,8 @@ namespace RudimentaryGameEngine
 				NUPScaleZ.Value = Convert.ToDecimal(world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getScale().Z);
 
 				CHKBoxNoisy.Checked = world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getNoise();
+
+				world.selectedObject = cmbBoxSceneObjects.SelectedIndex;
 
 				if (world.sceneObjectMap[cmbBoxSceneObjects.SelectedIndex].getBrushes().Length < 1)
 				{
@@ -560,7 +564,7 @@ namespace RudimentaryGameEngine
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
 		{
 			world.getCamera().setResolution((int)NUPCameraResX.Value, (int)NUPCameraResY.Value);
-			world.newScreenSize(new PointF((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
+			world.newScreenSize(new Point((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
 			int maxRatio = (this.Size.Width - 260) / (int)world.getCamera().getAspectRatio().X;
 			if ((this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y < maxRatio)
 				maxRatio = (this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y;
@@ -570,7 +574,7 @@ namespace RudimentaryGameEngine
 		private void numericUpDown2_ValueChanged(object sender, EventArgs e)
 		{
 			world.getCamera().setResolution((int)NUPCameraResX.Value, (int)NUPCameraResY.Value);
-			world.newScreenSize(new PointF((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
+			world.newScreenSize(new Point((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
 			int maxRatio = (this.Size.Width - 260) / (int)world.getCamera().getAspectRatio().X;
 			if ((this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y < maxRatio)
 				maxRatio = (this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y;
@@ -580,7 +584,7 @@ namespace RudimentaryGameEngine
 		private void numericUpDown3_ValueChanged(object sender, EventArgs e)
 		{
 			world.getCamera().setAspectRatio((int)NUPCameraARX.Value, (int)NUPCameraARY.Value);
-			world.newScreenSize(new PointF((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
+			world.newScreenSize(new Point((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
 			int maxRatio = (this.Size.Width - 260) / (int)world.getCamera().getAspectRatio().X;
 			if ((this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y < maxRatio)
 				maxRatio = (this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y;
@@ -590,7 +594,7 @@ namespace RudimentaryGameEngine
 		private void numericUpDown4_ValueChanged(object sender, EventArgs e)
 		{
 			world.getCamera().setAspectRatio((int)NUPCameraARX.Value, (int)NUPCameraARY.Value);
-			world.newScreenSize(new PointF((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
+			world.newScreenSize(new Point((int)NUPCameraResX.Value, (int)NUPCameraResY.Value));
 			int maxRatio = (this.Size.Width - 260) / (int)world.getCamera().getAspectRatio().X;
 			if ((this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y < maxRatio)
 				maxRatio = (this.Size.Height - 90) / (int)world.getCamera().getAspectRatio().Y;

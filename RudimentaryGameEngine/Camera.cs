@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
+using _3DMathFramework;
+using Point = System.Drawing.Point;
+using PointF = _3DMathFramework.PointF;
 
 namespace RudimentaryGameEngine
 {
@@ -11,12 +14,12 @@ namespace RudimentaryGameEngine
 	{
 		public Point3F location { get; }
 		public Point3F rotation = new Point3F(0, 0, 0);
-		private PointF Resolution = new PointF(640, 480);
+		private Point Resolution = new Point(640, 480);
 		private PointF AspectRatio = new PointF(4, 3);
 		private float screenDepth = 40;
 		private float flightSpeed = 100;
 
-		public Camera(Point3F location, PointF Resolution, float depth = 5)
+		public Camera(Point3F location, Point Resolution, float depth = 5)
 		{
 			this.location = location;
 			this.Resolution = Resolution;
@@ -68,10 +71,10 @@ namespace RudimentaryGameEngine
 
 		public void setResolution(int x, int y)
 		{
-			Resolution = new PointF(x, y);
+			Resolution = new Point(x, y);
 		}
 
-		public PointF getResolution()
+		public Point getResolution()
 		{
 			return Resolution;
 		}

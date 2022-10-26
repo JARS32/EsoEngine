@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using _3DMathFramework;
+using Point = System.Drawing.Point;
 
 namespace RudimentaryGameEngine
 {
@@ -154,6 +156,11 @@ namespace RudimentaryGameEngine
 		#endregion
 
 		#region get sets
+		public Point3F[] getTB()
+		{
+			return new Point3F[] { TBrightVector, TBupVector, TBforwardVector};
+		}
+
 		public float getDepth()
 		{
 			return depth;
@@ -432,7 +439,7 @@ namespace RudimentaryGameEngine
 				{
 					screenPos = new Point3F((difference.X / difference.Z) * parent.getCamera().getResolution().X * (parent.getCamera().getAspectRatio().Y / parent.getCamera().getAspectRatio().X), (difference.Y / difference.Z) * parent.getCamera().getResolution().Y);
 				}
-				Point screenPoint = screenPos.toPoint();
+				Point screenPoint = new Point(Convert.ToInt32(screenPos.X), Convert.ToInt32(screenPos.Y));
 				screenPoint.X += (int)parent.getCamera().getResolution().X / 2;
 				screenPoint.Y += (int)parent.getCamera().getResolution().Y / 2;
 				screenPoints[i] = screenPoint;

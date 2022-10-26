@@ -5,13 +5,15 @@ using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using _3DMathFramework;
+using Point = System.Drawing.Point;
 
 namespace RudimentaryGameEngine
 {
 	public class World
 	{
 		private Bitmap screen;
-		private Camera camera = new Camera(new Point3F(0, 0, -200), new PointF(640, 480));
+		private Camera camera = new Camera(new Point3F(0, 0, -200), new Point(640, 480));
 		private Graphics screenPanel;
 		private PictureBox pcBoxScreen;
 		private SolidBrush clearBrush = new SolidBrush(Color.White);
@@ -30,9 +32,11 @@ namespace RudimentaryGameEngine
 		public Point3F upcomingCameraTranslation = new Point3F(0, 0, 0);
 		public Point3F upcomingCameraRotation = new Point3F(0, 0, 0);
 
+		public int selectedObject = -1;
+
 		public World()
 		{
-			newScreenSize(new PointF(640, 480));
+			newScreenSize(new Point(640, 480));
 			screenPanel = Graphics.FromImage(screen);
 			controls.Add("W", false);
 			controls.Add("A", false);
@@ -51,7 +55,7 @@ namespace RudimentaryGameEngine
 			controls.Add("Space", false);
 		}
 
-		public void newScreenSize(PointF resolution)
+		public void newScreenSize(Point resolution)
 		{
 			screen = new Bitmap((int)resolution.X, (int)resolution.Y);
 			screenPanel = Graphics.FromImage(screen);
@@ -234,6 +238,50 @@ namespace RudimentaryGameEngine
 									screenPanel.DrawPolygon(new Pen(Color.Black, 1), face);
 								}
 								break;
+						}
+						if (selectedObject != -1)
+						{
+							SceneObject _object = sceneObjectMap[selectedObject];
+							Point3F worldLocation = _object.getLocation().deepCopy() - camera.location.deepCopy();
+
+							Point3F pointCenter = worldLocation.deepCopy();
+							Point3F pointTBX = worldLocation.deepCopy() + (_object.getTB()[0].deepCopy()) * 40;
+							Point3F pointTBY = worldLocation.deepCopy() + (_object.getTB()[1].deepCopy() * -1) * 40;
+							Point3F pointTBZ = worldLocation.deepCopy() + (_object.getTB()[2].deepCopy() * -1) * 40;
+							Point3F cameraPoint = camera.getLocation().deepCopy();
+							Point3F differenceCenter = new Point3F(pointCenter.X - cameraPoint.X, pointCenter.Y - cameraPoint.Y, pointCenter.Z - cameraPoint.Z);
+							Point3F differenceTBX = new Point3F(pointTBX.X - cameraPoint.X, pointTBX.Y - cameraPoint.Y, pointTBX.Z - cameraPoint.Z);
+							Point3F differenceTBY = new Point3F(pointTBY.X - cameraPoint.X, pointTBY.Y - cameraPoint.Y, pointTBY.Z - cameraPoint.Z);
+							Point3F differenceTBZ = new Point3F(pointTBZ.X - cameraPoint.X, pointTBZ.Y - cameraPoint.Y, pointTBZ.Z - cameraPoint.Z);
+							Point3F screenPosCenter;
+							Point3F screenPosTBX;
+							Point3F screenPosTBY;
+							Point3F screenPosTBZ;
+
+							screenPosCenter = new Point3F((differenceCenter.X / differenceCenter.Z) * camera.getResolution().X * (camera.getAspectRatio().Y / camera.getAspectRatio().X), (differenceCenter.Y / differenceCenter.Z) * camera.getResolution().Y);
+							screenPosTBX = new Point3F((differenceTBX.X / differenceTBX.Z) * camera.getResolution().X * (camera.getAspectRatio().Y / camera.getAspectRatio().X), (differenceTBX.Y / differenceTBX.Z) * camera.getResolution().Y);
+							screenPosTBY = new Point3F((differenceTBY.X / differenceTBY.Z) * camera.getResolution().X * (camera.getAspectRatio().Y / camera.getAspectRatio().X), (differenceTBY.Y / differenceTBY.Z) * camera.getResolution().Y);
+							screenPosTBZ = new Point3F((differenceTBZ.X / differenceTBZ.Z) * camera.getResolution().X * (camera.getAspectRatio().Y / camera.getAspectRatio().X), (differenceTBZ.Y / differenceTBZ.Z) * camera.getResolution().Y);
+
+							Point screenPointCenter = new Point(Convert.ToInt32(screenPosCenter.X), Convert.ToInt32(screenPosCenter.Y));
+							screenPointCenter.X += (int)camera.getResolution().X / 2;
+							screenPointCenter.Y += (int)camera.getResolution().Y / 2;
+
+							Point screenPointTBX = new Point(Convert.ToInt32(screenPosTBX.X), Convert.ToInt32(screenPosTBX.Y));
+							screenPointTBX.X += (int)camera.getResolution().X / 2;
+							screenPointTBX.Y += (int)camera.getResolution().Y / 2;
+
+							Point screenPointTBY = new Point(Convert.ToInt32(screenPosTBY.X), Convert.ToInt32(screenPosTBY.Y));
+							screenPointTBY.X += (int)camera.getResolution().X / 2;
+							screenPointTBY.Y += (int)camera.getResolution().Y / 2;
+
+							Point screenPointTBZ = new Point(Convert.ToInt32(screenPosTBZ.X), Convert.ToInt32(screenPosTBZ.Y));
+							screenPointTBZ.X += (int)camera.getResolution().X / 2;
+							screenPointTBZ.Y += (int)camera.getResolution().Y / 2;
+
+							screenPanel.DrawLine(new Pen(Color.Green, 1), screenPointCenter, screenPointTBX);
+							screenPanel.DrawLine(new Pen(Color.Red, 1), screenPointCenter, screenPointTBY);
+							screenPanel.DrawLine(new Pen(Color.Blue, 1), screenPointCenter, screenPointTBZ);
 						}
 					}
 					else
