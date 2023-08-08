@@ -119,10 +119,11 @@ namespace RudimentaryGameEngine
 			foreach (SceneObject SO in sceneObjects)
 			{
 				Point[] faces;
+				Quaternion worldRotation = QuaternionHelper.fromAxisAngle(new Point3F(0, 1, 0), camera.rotation.Y);
 				if (Ortho)
 					faces = SO.getScreenTransformOrtho();
 				else
-					faces = SO.getScreenTransform();
+					faces = SO.getScreenTransform(camera.location, worldRotation);
 				for (int i = 0; i < faces.Length; i += 3)
 				{
 					Point[] face = new Point[3] { faces[i], faces[i + 1], faces[i + 2] };
@@ -279,8 +280,11 @@ namespace RudimentaryGameEngine
 							screenPointTBZ.X += (int)camera.getResolution().X / 2;
 							screenPointTBZ.Y += (int)camera.getResolution().Y / 2;
 
+							screenPanel.DrawLine(new Pen(Color.White, 3), screenPointCenter, screenPointTBX);
 							screenPanel.DrawLine(new Pen(Color.Green, 1), screenPointCenter, screenPointTBX);
+							screenPanel.DrawLine(new Pen(Color.White, 3), screenPointCenter, screenPointTBY);
 							screenPanel.DrawLine(new Pen(Color.Red, 1), screenPointCenter, screenPointTBY);
+							screenPanel.DrawLine(new Pen(Color.White, 3), screenPointCenter, screenPointTBZ);
 							screenPanel.DrawLine(new Pen(Color.Blue, 1), screenPointCenter, screenPointTBZ);
 						}
 					}

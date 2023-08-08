@@ -489,6 +489,80 @@ namespace RudimentaryGameEngine
 			return returnPoints;
 		}
 
+		public Point[] getScreenTransform(Point3F origin, Quaternion rotation)
+		{
+			Point[] returnPoints = new Point[3 * triCount];
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				Point3F worldLocation = location.deepCopy() - origin.deepCopy();
+				worldLocation = worldLocation.rotate(rotation.deepCopy());
+				Point3F[] worldVertices = new Point3F[vertices.Length];
+				for (int j = 0; j < vertices.Length; j++)
+				{
+					worldVertices[j] = vertices[j].rotate(rotation.deepCopy());
+				}
+				Point3F point = new Point3F(worldVertices[i].X + worldLocation.X, worldVertices[i].Y + worldLocation.Y, worldVertices[i].Z + worldLocation.Z);
+				Point3F cameraPoint = new Point3F(origin.X, origin.Y, origin.Z);
+				Point3F difference = new Point3F(point.X - cameraPoint.X, point.Y - cameraPoint.Y, point.Z - cameraPoint.Z);
+				Point3F screenPos;
+				if (worldLocation.Z <= 0)
+				{
+					continue;
+				}
+				else
+				{
+					screenPos = new Point3F((difference.X / difference.Z) * parent.getCamera().getResolution().X * (parent.getCamera().getAspectRatio().Y / parent.getCamera().getAspectRatio().X), (difference.Y / difference.Z) * parent.getCamera().getResolution().Y);
+				}
+				Point screenPoint = new Point(Convert.ToInt32(screenPos.X), Convert.ToInt32(screenPos.Y));
+				screenPoint.X += (int)parent.getCamera().getResolution().X / 2;
+				screenPoint.Y += (int)parent.getCamera().getResolution().Y / 2;
+				screenPoints[i] = screenPoint;
+			}
+
+			for (int i = 0; i < faces.Length; i++)
+			{
+				faces[i].calculateDepth();
+			}
+
+			bool changed = true;
+			while (changed)
+			{
+				changed = false;
+				for (int i = 0; i < faces.Length - 1; i++)
+				{
+					if (faces[i].getDepth() < faces[i + 1].getDepth())
+					{
+						face temp = faces[i].deepCopy();
+						faces[i] = faces[i + 1];
+						faces[i + 1] = temp;
+						changed = true;
+					}
+				}
+			}
+
+			int ptr = 0;
+			foreach (face f in faces)
+			{
+				if (f.getTriCount() == 1)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
+						ptr++;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 6; i++)
+					{
+						returnPoints[ptr] = screenPoints[f.pointIndices[i]];
+						ptr++;
+					}
+				}
+			}
+			return returnPoints;
+		}
+
 		public Point[] getScreenTransformOrtho()
 		{
 			Point[] returnPoints = new Point[3*triCount];
